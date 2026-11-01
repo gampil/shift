@@ -2,65 +2,90 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shift Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Shift Tracker App</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #f8fafc; /* Warna latar terang yang lembut */
-      color: #0f172a;
-      min-height: 100vh;
+      background-color: #e2e8f0; /* Latar desktop (abu-abu) */
+      margin: 0;
+      display: flex;
+      justify-content: center;
     }
     
-    /* Animasi muncul */
+    /* Container pembatas untuk simulasi layar HP di desktop */
+    .app-container {
+      width: 100%;
+      max-width: 420px; /* Ukuran standar HP */
+      min-height: 100vh;
+      background-color: #f8fafc;
+      position: relative;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+    }
+
     .animate-fade-in {
-      animation: fadeIn 0.4s ease-out;
+      animation: fadeIn 0.3s ease-out forwards;
     }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(5px); }
+      from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Kustomisasi input date/month agar lebih rapi */
-    ::-webkit-calendar-picker-indicator { 
-      cursor: pointer;
-      opacity: 0.6;
-      transition: 0.2s;
+    /* Kustomisasi input Android style */
+    select, input[type="month"] {
+      -webkit-appearance: none;
+      background-image: none;
     }
-    ::-webkit-calendar-picker-indicator:hover {
-      opacity: 1;
+    ::-webkit-calendar-picker-indicator { 
+      opacity: 0.5;
+    }
+    
+    /* Sembunyikan scrollbar untuk tampilan lebih bersih */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
   </style>
 </head>
-<body class="p-3 md:p-8">
+<body>
 
-  <div class="max-w-5xl mx-auto space-y-5 md:space-y-6">
-    <!-- Header -->
-    <header class="bg-white rounded-2xl md:rounded-3xl p-5 md:p-6 flex flex-col md:flex-row justify-between items-center gap-3 shadow-sm border border-slate-200">
-      <div class="text-center md:text-left">
-        <h1 class="text-2xl font-extrabold tracking-tight text-slate-800 italic">SHIFT TRACKER</h1>
-        <p class="text-blue-600 text-xs font-bold uppercase tracking-widest mt-1">Personal Schedule</p>
-      </div>
-      <div class="text-center md:text-right border-t md:border-t-0 md:border-l border-slate-200 pt-3 md:pt-0 md:pl-6 w-full md:w-auto">
-        <p id="liveClock" class="text-xl md:text-2xl font-bold text-slate-800"></p>
-        <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-widest mt-1">Waktu Sistem</p>
+  <div class="app-container">
+    
+    <!-- Top App Bar (Android Style) -->
+    <header class="bg-blue-600 text-white sticky top-0 z-50 shadow-md">
+      <div class="px-5 py-4 flex justify-between items-center">
+        <div>
+          <h1 class="text-lg font-bold tracking-wide">Shift Tracker</h1>
+          <p class="text-[11px] text-blue-200 font-medium mt-0.5" id="liveClock">Memuat waktu...</p>
+        </div>
+        <div class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+          <span class="text-lg">📅</span>
+        </div>
       </div>
     </header>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6">
+    <!-- Scrollable Content Area -->
+    <main class="flex-1 overflow-y-auto no-scrollbar p-4 pb-28 space-y-4">
       
-      <!-- Panel Konfigurasi -->
-      <section class="lg:col-span-1 space-y-6">
-        <div class="bg-white rounded-2xl md:rounded-3xl p-5 md:p-6 shadow-sm border border-slate-200">
-          <h2 class="text-base md:text-lg font-bold mb-5 flex items-center gap-2 text-slate-800">
-            <span class="p-1.5 bg-blue-100 rounded-lg text-sm text-blue-600">⚙️</span> KONFIGURASI
-          </h2>
-          <div class="space-y-5">
-            <div>
-              <label class="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2 block">Status Shift Hari Ini</label>
-              <select id="startShift" class="w-full p-3.5 md:p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-semibold outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm">
+      <!-- Card Konfigurasi -->
+      <section class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+        <h2 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
+          <span class="text-blue-600">⚙️</span> Pengaturan Jadwal
+        </h2>
+        
+        <div class="space-y-4">
+          <!-- Material-like Input Field -->
+          <div class="relative">
+            <label class="text-[10px] font-bold uppercase text-slate-500 mb-1.5 block">Shift Hari Ini</label>
+            <div class="relative bg-slate-50 border border-slate-200 rounded-xl flex items-center px-3">
+              <select id="startShift" class="w-full py-3.5 bg-transparent text-slate-700 font-semibold text-sm outline-none">
                 <option value="0">Shift 1 (Hari 1)</option>
                 <option value="1">Shift 1 (Hari 2)</option>
                 <option value="2">Shift 2 (Hari 1)</option>
@@ -70,56 +95,62 @@
                 <option value="6">Libur (Hari 1)</option>
                 <option value="7">Libur (Hari 2)</option>
               </select>
+              <span class="absolute right-4 text-slate-400 pointer-events-none">▼</span>
             </div>
-            <div>
-              <label class="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2 block">Sampai Bulan Apa?</label>
-              <input type="month" id="untilMonth" class="w-full p-3.5 md:p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-semibold outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm">
-            </div>
-            <button onclick="generateJadwal()" class="w-full bg-blue-600 hover:bg-blue-700 transition-all py-3.5 md:py-4 rounded-xl font-extrabold text-xs md:text-sm tracking-widest text-white shadow-lg shadow-blue-500/30 active:scale-95">
-              TAMPILKAN JADWAL
-            </button>
+          </div>
+
+          <div class="relative">
+            <label class="text-[10px] font-bold uppercase text-slate-500 mb-1.5 block">Target Bulan</label>
+            <input type="month" id="untilMonth" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-semibold text-sm outline-none focus:border-blue-500">
           </div>
         </div>
       </section>
 
-      <!-- Panel Kalender -->
-      <section class="lg:col-span-2">
-        <div id="calendarContainer" class="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-slate-200 hidden min-h-[400px]">
-          <div id="calendarList" class="space-y-8">
-            <!-- Kalender akan dirender di sini -->
-          </div>
-        </div>
-        
-        <!-- Placeholder sebelum generate -->
-        <div id="placeholder" class="bg-white rounded-2xl md:rounded-3xl p-12 md:p-16 flex flex-col items-center justify-center text-center shadow-sm border border-slate-200 min-h-[400px]">
-           <div class="w-20 h-20 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-5">
-             <span class="text-4xl">🗓️</span>
-           </div>
-           <p class="text-slate-500 font-semibold max-w-xs text-sm">Silakan isi konfigurasi shift hari ini dan pilih target bulan untuk menampilkan kalender.</p>
-        </div>
-      </section>
+      <!-- Placeholder -->
+      <div id="placeholder" class="bg-transparent py-10 flex flex-col items-center justify-center text-center">
+         <div class="w-16 h-16 bg-slate-200/50 text-slate-400 rounded-full flex items-center justify-center mb-3">
+           <span class="text-2xl">🔍</span>
+         </div>
+         <p class="text-slate-400 text-xs font-medium max-w-[200px]">Atur konfigurasi di atas dan tekan tombol generate.</p>
+      </div>
+
+      <!-- Container Kalender -->
+      <div id="calendarList" class="space-y-5">
+        <!-- Kalender masuk ke sini -->
+      </div>
+      
+    </main>
+
+    <!-- Sticky Bottom Navigation / Action Button -->
+    <div class="fixed bottom-0 w-full max-w-[420px] bg-white border-t border-slate-200 p-4 pb-safe z-50">
+      <button onclick="generateJadwal()" class="w-full bg-blue-600 hover:bg-blue-700 transition-colors py-3.5 rounded-xl font-bold text-sm tracking-wide text-white shadow-lg shadow-blue-600/30 active:scale-95 flex justify-center items-center gap-2">
+        <span>GENERATE JADWAL</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+      </button>
     </div>
+
   </div>
 
   <script>
-    // Jam Real-time
+    // Update Jam Real-time
     setInterval(() => {
-      document.getElementById('liveClock').innerText = new Date().toLocaleTimeString('id-ID', { hour12: false });
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit' });
+      const dateString = now.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' });
+      document.getElementById('liveClock').innerText = `${dateString} • ${timeString}`;
     }, 1000);
 
     function generateJadwal() {
       const startIndex = parseInt(document.getElementById('startShift').value);
       const untilInput = document.getElementById('untilMonth').value;
       
-      if(!untilInput) return alert("Pilih bulan target terlebih dahulu!");
+      if(!untilInput) return alert("Pilih target bulan terlebih dahulu!");
 
-      document.getElementById('calendarContainer').classList.remove('hidden');
       document.getElementById('placeholder').classList.add('hidden');
       
       const list = document.getElementById('calendarList');
       list.innerHTML = '';
 
-      // Tentukan hari ini dan bersihkan jamnya untuk akurasi perhitungan selisih hari
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
@@ -128,31 +159,30 @@
       const endMonth = parseInt(parts[1]) - 1;
       
       const shiftPattern = ["S1", "S1", "S2", "S2", "S3", "S3", "OFF", "OFF"];
-      const namaBulan = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
+      const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
       
       let currentMonth = today.getMonth();
       let currentYear = today.getFullYear();
 
-      // Loop dari bulan ini sampai bulan yang dipilih
       while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
         
+        // Card per bulan ala Android
         const monthSection = document.createElement('div');
-        monthSection.className = "animate-fade-in";
+        monthSection.className = "bg-white rounded-2xl p-4 shadow-sm border border-slate-100 animate-fade-in";
         monthSection.innerHTML = `
-          <h3 class="text-lg md:text-xl font-extrabold mb-4 text-slate-800 flex items-center gap-3">
-            <span class="w-1.5 h-6 bg-blue-500 rounded-full"></span>
+          <h3 class="text-base font-bold mb-4 text-slate-800 ml-1">
             ${namaBulan[currentMonth]} ${currentYear}
           </h3>
-          <div class="grid grid-cols-7 gap-1 md:gap-2 mb-2 text-center">
-            <div class="text-red-500 font-bold text-[9px] md:text-[11px] tracking-widest">MIN</div>
-            <div class="text-slate-400 font-bold text-[9px] md:text-[11px] tracking-widest">SEN</div>
-            <div class="text-slate-400 font-bold text-[9px] md:text-[11px] tracking-widest">SEL</div>
-            <div class="text-slate-400 font-bold text-[9px] md:text-[11px] tracking-widest">RAB</div>
-            <div class="text-slate-400 font-bold text-[9px] md:text-[11px] tracking-widest">KAM</div>
-            <div class="text-slate-400 font-bold text-[9px] md:text-[11px] tracking-widest">JUM</div>
-            <div class="text-slate-400 font-bold text-[9px] md:text-[11px] tracking-widest">SAB</div>
+          <div class="grid grid-cols-7 gap-y-3 gap-x-1 text-center mb-2">
+            <div class="text-red-500 font-bold text-[10px]">MIN</div>
+            <div class="text-slate-400 font-bold text-[10px]">SEN</div>
+            <div class="text-slate-400 font-bold text-[10px]">SEL</div>
+            <div class="text-slate-400 font-bold text-[10px]">RAB</div>
+            <div class="text-slate-400 font-bold text-[10px]">KAM</div>
+            <div class="text-slate-400 font-bold text-[10px]">JUM</div>
+            <div class="text-slate-400 font-bold text-[10px]">SAB</div>
           </div>
-          <div id="grid-${currentMonth}-${currentYear}" class="grid grid-cols-7 gap-1 md:gap-2"></div>
+          <div id="grid-${currentMonth}-${currentYear}" class="grid grid-cols-7 gap-y-3 gap-x-1 text-center"></div>
         `;
         list.appendChild(monthSection);
         
@@ -160,20 +190,17 @@
         const firstDay = new Date(currentYear, currentMonth, 1).getDay();
         const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-        // Tambahkan kotak kosong untuk awal bulan
+        // Kotak kosong awal bulan
         for(let i=0; i<firstDay; i++) {
-          grid.innerHTML += `<div class="p-2"></div>`;
+          grid.innerHTML += `<div></div>`;
         }
 
-        // Loop untuk setiap hari dalam bulan tersebut
+        // Render hari
         for (let d = 1; d <= lastDate; d++) {
           const targetDate = new Date(currentYear, currentMonth, d);
-          
-          // Hitung selisih hari dari hari ini
           const diffTime = targetDate.getTime() - today.getTime();
           const diffDays = Math.round(diffTime / (1000 * 3600 * 24));
           
-          // Hitung index shift dengan modulo yang aman untuk angka negatif (masa lalu)
           let shiftIdx = ((startIndex + diffDays) % 8 + 8) % 8;
           const shift = shiftPattern[shiftIdx];
           
@@ -181,41 +208,48 @@
           const isToday = today.toDateString() === targetDate.toDateString();
           const isSunday = targetDate.getDay() === 0;
 
-          // Styling
-          let bgClass = 'bg-slate-50 border-slate-100';
-          let dateColor = isSunday ? 'text-red-500' : 'text-slate-700';
-          let shiftBadge = 'bg-slate-200 text-slate-600';
+          // Desain Google Calendar style (angka dalam lingkaran bulat jika hari ini)
+          let dateStyle = isSunday ? 'text-red-500' : 'text-slate-700';
+          let dateBg = 'bg-transparent';
+          let shiftStyle = 'bg-slate-100 text-slate-500';
+
+          if (isToday) {
+            dateBg = 'bg-blue-600';
+            dateStyle = 'text-white font-bold shadow-md shadow-blue-500/40';
+          }
 
           if (isOff) {
-            bgClass = 'bg-red-50 border-red-100';
-            dateColor = 'text-red-600';
-            shiftBadge = 'bg-red-500 text-white shadow-sm shadow-red-500/30';
+            shiftStyle = 'bg-red-100 text-red-600 font-bold';
+            if (!isToday && !isSunday) dateStyle = 'text-red-500'; 
           } else if (isToday) {
-            bgClass = 'bg-blue-50 border-blue-200 ring-2 ring-blue-500 ring-offset-1';
-            dateColor = 'text-blue-700';
-            shiftBadge = 'bg-blue-600 text-white shadow-sm shadow-blue-600/30';
+            shiftStyle = 'bg-blue-100 text-blue-700 font-bold';
           } else {
-            shiftBadge = 'bg-slate-200 text-slate-700'; // S1, S2, S3 normal
+            shiftStyle = 'bg-slate-100 text-slate-600 font-semibold';
           }
 
           grid.innerHTML += `
-            <div class="relative p-1 md:p-2 rounded-xl border ${bgClass} flex flex-col items-center justify-center aspect-[4/5] md:aspect-auto md:min-h-[75px] transition-all hover:-translate-y-0.5">
-              <span class="text-sm md:text-lg font-extrabold ${dateColor} leading-none mb-1 md:mb-1.5">${d}</span>
-              <span class="text-[8px] md:text-[10px] font-black uppercase tracking-widest px-1.5 md:px-2 py-0.5 md:py-1 rounded ${shiftBadge}">
+            <div class="flex flex-col items-center justify-start gap-1">
+              <div class="w-8 h-8 flex items-center justify-center rounded-full text-sm font-medium ${dateBg} ${dateStyle} transition-transform active:scale-90">
+                ${d}
+              </div>
+              <span class="text-[9px] px-2 py-0.5 rounded-full tracking-wide ${shiftStyle}">
                 ${shift}
               </span>
-              ${isToday ? '<span class="absolute -top-2 -right-1 md:-top-2 md:-right-2 bg-blue-600 text-white text-[7px] md:text-[9px] px-1.5 py-0.5 font-bold rounded-full shadow-md">HARI INI</span>' : ''}
             </div>
           `;
         }
 
-        // Pindah ke bulan berikutnya
         currentMonth++;
         if (currentMonth > 11) {
           currentMonth = 0;
           currentYear++;
         }
       }
+      
+      // Scroll sedikit ke bawah untuk melihat hasil
+      setTimeout(() => {
+        window.scrollBy({ top: 150, behavior: 'smooth' });
+      }, 100);
     }
   </script>
 </body>
